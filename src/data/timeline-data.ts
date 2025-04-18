@@ -29,14 +29,14 @@ export const timelineData: TimelineItemType[] = [
   {
     date: '2024-11-20',
     title: 'Mise aux normes du tableau électrique',
-    description: 'Remplacement du tableau électrique et mise aux normes de l'installation électrique dans tout l'appartement.',
+    description: 'Remplacement du tableau électrique et mise aux normes de l\'installation électrique dans tout l\'appartement.',
     category: 'Électricité',
     documents: 5,
     photos: 3,
     comments: 0,
     price: 2800,
     warranty: 5,
-    additionalDetails: 'Installation d'un tableau électrique 3 rangées avec protection différentielle pour chaque circuit et parafoudre intégré.',
+    additionalDetails: 'Installation d\'un tableau électrique 3 rangées avec protection différentielle pour chaque circuit et parafoudre intégré.',
     materials: [
       'Tableau électrique Legrand',
       'Disjoncteurs différentiels 30mA',
