@@ -2,7 +2,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { UserCircle } from 'lucide-react';
 import Logo from './Logo';
 
 const Navbar = () => {
@@ -15,6 +14,9 @@ const Navbar = () => {
           <nav className="hidden md:flex items-center space-x-6">
             <Link to="/" className="text-izimmo-gray-700 hover:text-izimmo-blue-600 font-medium transition-colors">
               Accueil
+            </Link>
+            <Link to="/dashboard" className="text-izimmo-gray-700 hover:text-izimmo-blue-600 font-medium transition-colors">
+              Tableau de bord
             </Link>
             <Link to="/artisans" className="text-izimmo-gray-700 hover:text-izimmo-blue-600 font-medium transition-colors">
               Artisans
@@ -29,14 +31,10 @@ const Navbar = () => {
         </div>
         
         <div className="flex items-center gap-4">
-          <Link to="/login">
-            <Button variant="outline" className="hidden sm:flex items-center gap-2">
-              <UserCircle size={18} />
-              <span>Connexion</span>
+          <Link to="/dashboard">
+            <Button className="bg-izimmo-blue-500 hover:bg-izimmo-blue-600">
+              Accéder au dashboard
             </Button>
-          </Link>
-          <Link to="/signup">
-            <Button className="bg-izimmo-blue-500 hover:bg-izimmo-blue-600">S'inscrire</Button>
           </Link>
         </div>
       </div>
