@@ -5,14 +5,14 @@ export const timelineData: TimelineItemType[] = [
   {
     date: '2025-03-15',
     title: 'Rénovation complète de la salle de bain',
-    description: 'Remplacement de la baignoire par une douche à l'italienne, installation d'un meuble vasque, pose de carrelage mural et au sol.',
+    description: 'Remplacement de la baignoire par une douche à l\'italienne, installation d\'un meuble vasque, pose de carrelage mural et au sol.',
     category: 'Rénovation',
     documents: 3,
     photos: 8,
     comments: 2,
     price: 6500,
     warranty: 10,
-    additionalDetails: 'La rénovation a inclus le remplacement de toute la plomberie existante et l'installation d'un sèche-serviette électrique.',
+    additionalDetails: 'La rénovation a inclus le remplacement de toute la plomberie existante et l\'installation d\'un sèche-serviette électrique.',
     materials: [
       'Carrelage imitation marbre 60x60',
       'Paroi de douche en verre 8mm',
