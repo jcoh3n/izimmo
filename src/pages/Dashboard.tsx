@@ -1,5 +1,5 @@
-
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   SidebarProvider, 
   Sidebar, 
@@ -8,7 +8,7 @@ import {
   SidebarFooter,
   SidebarTrigger
 } from "@/components/ui/sidebar";
-import { Home, Building, FilePlus, Clock, Users, Settings, LogOut, Plus, Search, Bell, Menu } from 'lucide-react';
+import { Home, Building, FilePlus, Clock, Users, Settings, LogOut, Plus, Search, Bell, Menu, ArrowLeft } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -197,13 +197,19 @@ const Dashboard = () => {
                     <Menu size={20} />
                   </Button>
                 </SidebarTrigger>
-                <div className="relative w-64">
+                <div className="relative w-64 mr-4">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-izimmo-gray-400" size={16} />
                   <Input
                     placeholder="Rechercher..."
                     className="pl-9 bg-izimmo-gray-50 border-izimmo-gray-200"
                   />
                 </div>
+                <Link to="/">
+                  <Button variant="outline" className="flex items-center gap-2">
+                    <ArrowLeft size={16} />
+                    Retour au site
+                  </Button>
+                </Link>
               </div>
               
               <div className="flex items-center gap-4">
