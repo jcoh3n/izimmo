@@ -74,18 +74,18 @@ export const timelineData: TimelineItemType[] = [
   {
     date: '2024-05-12',
     title: 'Remplacement chaudière',
-    description: 'Installation d'une nouvelle chaudière à condensation en remplacement de l'ancienne chaudière défectueuse.',
+    description: 'Installation d\'une nouvelle chaudière à condensation en remplacement de l\'ancienne chaudière défectueuse.',
     category: 'Plomberie',
     documents: 4,
     photos: 5,
     comments: 1,
     price: 4800,
     warranty: 8,
-    additionalDetails: 'La nouvelle chaudière est plus économe en énergie avec un rendement de 98%. Un crédit d'impôt de 30% a été appliqué.',
+    additionalDetails: 'La nouvelle chaudière est plus économe en énergie avec un rendement de 98%. Un crédit d\'impôt de 30% a été appliqué.',
     materials: [
       'Chaudière à condensation Saunier Duval',
       'Thermostat connecté',
-      'Vase d'expansion 8L'
+      'Vase d\'expansion 8L'
     ],
     artisan: {
       name: 'Sophie Martin',
