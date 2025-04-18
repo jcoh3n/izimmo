@@ -8,7 +8,7 @@ import {
   SidebarFooter,
   SidebarTrigger
 } from "@/components/ui/sidebar";
-import { Home, Buildings, FilePlus, Clock, Users, Settings, LogOut, Plus, Search, Bell, Menu } from 'lucide-react';
+import { Home, Building, FilePlus, Clock, Users, Settings, LogOut, Plus, Search, Bell, Menu } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -169,7 +169,7 @@ const Dashboard = () => {
                 Tableau de bord
               </h3>
               <SidebarNavItem icon={Home} label="Accueil" active />
-              <SidebarNavItem icon={Buildings} label="Mes biens" badge={3} />
+              <SidebarNavItem icon={Building} label="Mes biens" badge={3} />
               <SidebarNavItem icon={FilePlus} label="Ajouter une intervention" />
               <SidebarNavItem icon={Clock} label="Historique" />
               <SidebarNavItem icon={Users} label="Artisans" />

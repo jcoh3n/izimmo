@@ -2,7 +2,7 @@
 import React from 'react';
 import Navbar from '@/components/header/Navbar';
 import { Button } from '@/components/ui/button';
-import { ChevronRight, Shield, Clipboard, FileText, Clock, Search, Home, Tool, Users } from 'lucide-react';
+import { ChevronRight, Shield, Clipboard, FileText, Clock, Search, Home, Wrench, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ArtisanCard from '@/components/artisans/ArtisanCard';
 import StepCard from '@/components/home/StepCard';
@@ -43,7 +43,7 @@ const Index = () => {
     {
       title: "Artisans certifiés",
       description: "Trouvez des professionnels qualifiés et vérifiés pour vos projets de rénovation et d'entretien.",
-      icon: Tool,
+      icon: Wrench,
     },
     {
       title: "Recherche simplifiée",
