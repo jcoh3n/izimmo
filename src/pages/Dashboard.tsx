@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   SidebarProvider, 
   Sidebar, 
@@ -8,7 +8,11 @@ import {
   SidebarFooter,
   SidebarTrigger
 } from "@/components/ui/sidebar";
-import { Home, Building, FilePlus, Clock, Users, Settings, LogOut, Plus, Search, Bell, Menu, ArrowLeft } from 'lucide-react';
+import { 
+  Home, Building, FilePlus, Clock, Users, Settings, LogOut, 
+  Plus, Search, Bell, Menu, LayoutDashboard, History, 
+  ChevronRight, MoreVertical 
+} from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -24,6 +28,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('properties');
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
   
   const propertyData = [
     {
@@ -103,34 +108,43 @@ const Dashboard = () => {
     {
       title: 'Biens',
       value: '3',
-      icon: Home,
-      color: 'text-blue-500 bg-blue-100'
+      icon: Building,
+      color: 'text-blue-600 bg-blue-100'
     },
     {
       title: 'Interventions',
       value: '25',
       icon: Clock,
-      color: 'text-green-500 bg-green-100'
+      color: 'text-green-600 bg-green-100'
     },
     {
       title: 'Artisans',
       value: '8',
       icon: Users,
-      color: 'text-purple-500 bg-purple-100'
+      color: 'text-purple-600 bg-purple-100'
     }
   ];
   
-  const SidebarNavItem = ({ icon: Icon, label, active, badge }: { icon: any, label: string, active?: boolean, badge?: number }) => (
-    <div className={cn(
-      "flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer transition-colors touch-target",
-      active 
-        ? "bg-sidebar-accent text-sidebar-accent-foreground" 
-        : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
-    )}>
+  const SidebarNavItem = ({ icon: Icon, label, active, badge, onClick }: { 
+    icon: React.ElementType;
+    label: string;
+    active?: boolean;
+    badge?: number;
+    onClick?: () => void;
+  }) => (
+    <div 
+      className={cn(
+        "flex items-center gap-3 px-4 py-3 rounded-md cursor-pointer transition-colors touch-target",
+        active 
+          ? "bg-sidebar-accent text-sidebar-accent-foreground" 
+          : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
+      )}
+      onClick={onClick}
+    >
       <Icon size={20} />
-      <span className="flex-1">{label}</span>
+      <span className="flex-1 font-medium">{label}</span>
       {badge && (
-        <Badge variant="secondary" className="bg-izimmo-blue-700 text-white text-xs py-0 px-2">
+        <Badge variant="secondary" className="bg-sidebar-primary text-white text-xs py-0 px-2">
           {badge}
         </Badge>
       )}
@@ -140,22 +154,194 @@ const Dashboard = () => {
   // Composant d'onglets mobiles pour basculer entre les sections
   const MobileTabs = () => (
     <Tabs defaultValue="properties" className="w-full mb-6 md:hidden">
-      <TabsList className="w-full grid grid-cols-3">
-        <TabsTrigger value="properties">Biens</TabsTrigger>
-        <TabsTrigger value="activity">Activité</TabsTrigger>
-        <TabsTrigger value="stats">Stats</TabsTrigger>
+      <TabsList className="w-full grid grid-cols-3 bg-izimmo-gray-50 p-1">
+        <TabsTrigger value="properties" className="rounded-md data-[state=active]:bg-white">Biens</TabsTrigger>
+        <TabsTrigger value="activity" className="rounded-md data-[state=active]:bg-white">Activité</TabsTrigger>
+        <TabsTrigger value="stats" className="rounded-md data-[state=active]:bg-white">Stats</TabsTrigger>
       </TabsList>
+      
+      <TabsContent value="properties" className="mt-4">
+        <StatsCards showOnly="biens" />
+        <PropertiesSection />
+      </TabsContent>
+      
+      <TabsContent value="activity" className="mt-4">
+        <StatsCards showOnly="interventions" />
+        <ActivitySection />
+      </TabsContent>
+      
+      <TabsContent value="stats" className="mt-4">
+        <StatsCards showOnly="all" />
+      </TabsContent>
     </Tabs>
+  );
+  
+  // Cartes de statistiques
+  const StatsCards = ({ showOnly = "all" }: { showOnly?: "all" | "biens" | "interventions" | "artisans" }) => {
+    const filteredStats = showOnly === "all" 
+      ? stats 
+      : stats.filter(stat => {
+          if (showOnly === "biens" && stat.title === "Biens") return true;
+          if (showOnly === "interventions" && stat.title === "Interventions") return true;
+          if (showOnly === "artisans" && stat.title === "Artisans") return true;
+          return false;
+        });
+    
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
+        {filteredStats.map((stat, index) => {
+          const Icon = stat.icon;
+          return (
+            <Card key={index} className="border border-slate-200 hover:border-slate-300 transition-colors">
+              <CardContent className="p-5 flex items-center gap-4">
+                <div className={`h-12 w-12 rounded-full flex items-center justify-center ${stat.color}`}>
+                  <Icon size={22} />
+                </div>
+                <div>
+                  <p className="text-izimmo-gray-600 text-sm font-medium">{stat.title}</p>
+                  <p className="text-3xl font-bold text-izimmo-gray-800">{stat.value}</p>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
+    );
+  };
+  
+  // Section de propriétés
+  const PropertiesSection = () => (
+    <Card className="h-full border border-slate-200">
+      <CardHeader className="pb-2">
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle>Mes biens</CardTitle>
+            <CardDescription>
+              Gérez vos propriétés et consultez leurs fiches
+            </CardDescription>
+          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <MoreVertical size={18} />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem>Ajouter un bien</DropdownMenuItem>
+              <DropdownMenuItem>Voir tous les biens</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <Tabs defaultValue="all" className="mt-2">
+          <TabsList className="mb-4 flex overflow-x-auto bg-slate-100 p-1 rounded-md">
+            <TabsTrigger value="all" className="flex-1 rounded-md data-[state=active]:bg-white">Tous</TabsTrigger>
+            <TabsTrigger value="apartments" className="flex-1 rounded-md data-[state=active]:bg-white">Appartements</TabsTrigger>
+            <TabsTrigger value="houses" className="flex-1 rounded-md data-[state=active]:bg-white">Maisons</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="all" className="space-y-4">
+            {propertyData.map((property) => (
+              <PropertyCard key={property.id} property={property} />
+            ))}
+          </TabsContent>
+          
+          <TabsContent value="apartments" className="space-y-4">
+            {propertyData
+              .filter(p => p.type === 'Appartement' || p.type === 'Loft')
+              .map((property) => (
+                <PropertyCard key={property.id} property={property} />
+              ))}
+          </TabsContent>
+          
+          <TabsContent value="houses" className="space-y-4">
+            {propertyData
+              .filter(p => p.type === 'Maison')
+              .map((property) => (
+                <PropertyCard key={property.id} property={property} />
+              ))}
+          </TabsContent>
+        </Tabs>
+      </CardContent>
+      <CardFooter className="flex justify-center border-t pt-4">
+        <Button variant="outline" className="w-full bg-white hover:bg-slate-50">
+          <Plus size={16} className="mr-2" />
+          Ajouter un bien
+        </Button>
+      </CardFooter>
+    </Card>
+  );
+  
+  // Section d'activité récente
+  const ActivitySection = () => (
+    <Card className="h-full border border-slate-200">
+      <CardHeader className="pb-2">
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle>Activité récente</CardTitle>
+            <CardDescription>
+              Les dernières mises à jour de vos biens
+            </CardDescription>
+          </div>
+          <Button variant="ghost" size="icon">
+            <MoreVertical size={18} />
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          {recentActivity.map((activity) => (
+            <div key={activity.id} className="flex gap-3 pb-3 border-b border-izimmo-gray-200 last:border-0">
+              {activity.type === 'intervention' && (
+                <Avatar className="h-10 w-10 shrink-0">
+                  <AvatarImage src={activity.artisanAvatar} />
+                  <AvatarFallback>{activity.artisan?.substring(0, 2)}</AvatarFallback>
+                </Avatar>
+              )}
+              
+              {activity.type === 'share' && (
+                <Avatar className="h-10 w-10 shrink-0">
+                  <AvatarImage src={activity.userAvatar} />
+                  <AvatarFallback>{activity.user?.substring(0, 2)}</AvatarFallback>
+                </Avatar>
+              )}
+              
+              {activity.type === 'update' && (
+                <div className="h-10 w-10 shrink-0 bg-izimmo-blue-100 rounded-full flex items-center justify-center text-izimmo-blue-600">
+                  <FilePlus size={20} />
+                </div>
+              )}
+              
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-izimmo-gray-800 break-words">{activity.description}</p>
+                <div className="flex items-center gap-2 mt-1 flex-wrap">
+                  <p className="text-xs text-izimmo-gray-600 truncate max-w-full">{activity.property}</p>
+                  <span className="text-izimmo-gray-400 hidden xs:inline">•</span>
+                  <p className="text-xs text-izimmo-gray-600">{activity.date}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+      <CardFooter className="flex justify-center border-t pt-4">
+        <Button variant="link" className="text-izimmo-blue-600 w-full">
+          Voir tout l'historique
+          <ChevronRight size={16} className="ml-1" />
+        </Button>
+      </CardFooter>
+    </Card>
   );
 
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
-        <Sidebar className="bg-sidebar border-r border-izimmo-gray-200">
-          <SidebarHeader className="p-4 flex items-center justify-center border-b border-izimmo-gray-200">
-            <div className="text-2xl font-bold text-white">
+        <Sidebar className="bg-sidebar border-r border-sidebar-border">
+          <SidebarHeader className="p-4 flex items-center justify-center border-b border-sidebar-border">
+            <Link to="/" className="text-2xl font-bold text-white hover:text-izimmo-blue-200 transition-colors">
               Iz'<span className="text-izimmo-blue-300">Immo</span>
-            </div>
+            </Link>
           </SidebarHeader>
           
           <SidebarContent className="py-4">
@@ -171,7 +357,7 @@ const Dashboard = () => {
                 </div>
               </div>
               
-              <Button className="w-full bg-izimmo-blue-500 hover:bg-izimmo-blue-600 flex items-center gap-2">
+              <Button className="w-full bg-sidebar-primary hover:bg-sidebar-primary/90 flex items-center gap-2">
                 <Plus size={16} />
                 <span>Ajouter un bien</span>
               </Button>
@@ -181,14 +367,37 @@ const Dashboard = () => {
               <h3 className="text-xs uppercase text-izimmo-blue-300 font-semibold mb-2 ml-3">
                 Tableau de bord
               </h3>
-              <SidebarNavItem icon={Home} label="Accueil" active />
-              <SidebarNavItem icon={Building} label="Mes biens" badge={3} />
-              <SidebarNavItem icon={FilePlus} label="Ajouter une intervention" />
-              <SidebarNavItem icon={Clock} label="Historique" />
-              <SidebarNavItem icon={Users} label="Artisans" />
+              <SidebarNavItem 
+                icon={Home} 
+                label="Accueil" 
+                onClick={() => navigate('/')}
+              />
+              <SidebarNavItem 
+                icon={LayoutDashboard} 
+                label="Tableau de bord" 
+                active
+              />
+              <SidebarNavItem 
+                icon={Building} 
+                label="Mes biens" 
+                badge={3}
+              />
+              <SidebarNavItem 
+                icon={FilePlus} 
+                label="Ajouter une intervention" 
+              />
+              <SidebarNavItem 
+                icon={History} 
+                label="Historique" 
+              />
+              <SidebarNavItem 
+                icon={Users} 
+                label="Artisans" 
+                onClick={() => navigate('/artisans')}
+              />
             </div>
             
-            <Separator className="my-4 bg-izimmo-gray-700" />
+            <Separator className="my-4 bg-sidebar-border" />
             
             <div className="space-y-1 px-3">
               <SidebarNavItem icon={Settings} label="Paramètres" />
@@ -196,12 +405,12 @@ const Dashboard = () => {
             </div>
           </SidebarContent>
           
-          <SidebarFooter className="p-4 border-t border-izimmo-gray-700 text-izimmo-blue-200 text-xs text-center">
+          <SidebarFooter className="p-4 border-t border-sidebar-border text-izimmo-blue-200 text-xs text-center">
             © 2025 Iz'Immo. Tous droits réservés.
           </SidebarFooter>
         </Sidebar>
         
-        <div className="flex-1">
+        <div className="flex-1 bg-white">
           <header className="bg-white border-b border-izimmo-gray-200 sticky top-0 z-10">
             <div className="flex justify-between items-center px-4 md:px-6 py-3">
               <div className="flex items-center gap-2">
@@ -210,19 +419,13 @@ const Dashboard = () => {
                     <Menu size={20} />
                   </Button>
                 </SidebarTrigger>
-                <div className="relative w-40 md:w-64 mr-2 md:mr-4 hidden sm:block">
+                <div className="relative w-40 md:w-64 mr-2 md:mr-4">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-izimmo-gray-400" size={16} />
                   <Input
                     placeholder="Rechercher..."
                     className="pl-9 bg-izimmo-gray-50 border-izimmo-gray-200"
                   />
                 </div>
-                <Link to="/" className="hidden sm:block">
-                  <Button variant="outline" className="flex items-center gap-2">
-                    <ArrowLeft size={16} />
-                    <span className="hidden md:inline">Retour au site</span>
-                  </Button>
-                </Link>
               </div>
               
               <div className="flex items-center gap-2 md:gap-4">
@@ -249,156 +452,31 @@ const Dashboard = () => {
                 </DropdownMenu>
               </div>
             </div>
-            
-            {/* Barre de recherche mobile */}
-            <div className="px-4 pb-3 sm:hidden">
-              <div className="relative w-full">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-izimmo-gray-400" size={16} />
-                <Input
-                  placeholder="Rechercher..."
-                  className="pl-9 bg-izimmo-gray-50 border-izimmo-gray-200 w-full"
-                />
-              </div>
-            </div>
           </header>
           
           <main className="p-4 md:p-6 bg-izimmo-gray-50 min-h-[calc(100vh-64px)]">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
-              <h1 className="text-xl md:text-2xl font-bold text-izimmo-gray-800 mb-2 sm:mb-0">
-                Tableau de bord
-              </h1>
-              
-              <Link to="/" className="sm:hidden">
-                <Button variant="outline" size="sm" className="flex items-center gap-1">
-                  <ArrowLeft size={16} />
-                  Retour au site
-                </Button>
-              </Link>
-            </div>
+            <h1 className="text-xl md:text-2xl font-bold text-izimmo-gray-800 mb-6">
+              Tableau de bord
+            </h1>
             
             {/* Navigation mobile par onglets */}
-            <MobileTabs />
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
-              {stats.map((stat, index) => {
-                const Icon = stat.icon;
-                return (
-                  <Card key={index}>
-                    <CardContent className="p-4 md:p-6 flex items-center gap-3 md:gap-4">
-                      <div className={`h-10 w-10 md:h-12 md:w-12 rounded-full flex items-center justify-center ${stat.color}`}>
-                        <Icon size={20} className="md:size-5" />
-                      </div>
-                      <div>
-                        <p className="text-izimmo-gray-600 text-sm">{stat.title}</p>
-                        <p className="text-2xl md:text-3xl font-bold text-izimmo-gray-800">{stat.value}</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2">
-                <Card className="h-full">
-                  <CardHeader className="pb-2">
-                    <CardTitle>Mes biens</CardTitle>
-                    <CardDescription>
-                      Gérez vos propriétés et consultez leurs fiches détaillées
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <Tabs defaultValue="all" className="mt-2">
-                      <TabsList className="mb-4 flex overflow-x-auto">
-                        <TabsTrigger value="all" className="flex-1">Tous</TabsTrigger>
-                        <TabsTrigger value="apartments" className="flex-1">Appartements</TabsTrigger>
-                        <TabsTrigger value="houses" className="flex-1">Maisons</TabsTrigger>
-                      </TabsList>
-                      
-                      <TabsContent value="all" className="space-y-4">
-                        {propertyData.map((property) => (
-                          <PropertyCard key={property.id} property={property} />
-                        ))}
-                      </TabsContent>
-                      
-                      <TabsContent value="apartments" className="space-y-4">
-                        {propertyData
-                          .filter(p => p.type === 'Appartement' || p.type === 'Loft')
-                          .map((property) => (
-                            <PropertyCard key={property.id} property={property} />
-                          ))}
-                      </TabsContent>
-                      
-                      <TabsContent value="houses" className="space-y-4">
-                        {propertyData
-                          .filter(p => p.type === 'Maison')
-                          .map((property) => (
-                            <PropertyCard key={property.id} property={property} />
-                          ))}
-                      </TabsContent>
-                    </Tabs>
-                  </CardContent>
-                  <CardFooter className="flex justify-center border-t pt-4">
-                    <Button variant="outline" className="w-full">
-                      <Plus size={16} className="mr-2" />
-                      Ajouter un bien
-                    </Button>
-                  </CardFooter>
-                </Card>
-              </div>
-              
-              <div>
-                <Card className="h-full">
-                  <CardHeader className="pb-2">
-                    <CardTitle>Activité récente</CardTitle>
-                    <CardDescription>
-                      Les dernières mises à jour de vos biens
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {recentActivity.map((activity) => (
-                        <div key={activity.id} className="flex gap-3 pb-3 border-b border-izimmo-gray-200 last:border-0">
-                          {activity.type === 'intervention' && (
-                            <Avatar className="h-10 w-10 shrink-0">
-                              <AvatarImage src={activity.artisanAvatar} />
-                              <AvatarFallback>{activity.artisan?.substring(0, 2)}</AvatarFallback>
-                            </Avatar>
-                          )}
-                          
-                          {activity.type === 'share' && (
-                            <Avatar className="h-10 w-10 shrink-0">
-                              <AvatarImage src={activity.userAvatar} />
-                              <AvatarFallback>{activity.user?.substring(0, 2)}</AvatarFallback>
-                            </Avatar>
-                          )}
-                          
-                          {activity.type === 'update' && (
-                            <div className="h-10 w-10 shrink-0 bg-izimmo-blue-100 rounded-full flex items-center justify-center text-izimmo-blue-600">
-                              <FilePlus size={20} />
-                            </div>
-                          )}
-                          
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-izimmo-gray-800 break-words">{activity.description}</p>
-                            <div className="flex items-center gap-2 mt-1 flex-wrap">
-                              <p className="text-xs text-izimmo-gray-600 truncate max-w-full">{activity.property}</p>
-                              <span className="text-izimmo-gray-400 hidden xs:inline">•</span>
-                              <p className="text-xs text-izimmo-gray-600">{activity.date}</p>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                  <CardFooter className="flex justify-center border-t pt-4">
-                    <Button variant="link" className="text-izimmo-blue-600 w-full">
-                      Voir tout l'historique
-                    </Button>
-                  </CardFooter>
-                </Card>
-              </div>
-            </div>
+            {isMobile ? (
+              <MobileTabs />
+            ) : (
+              <>
+                <StatsCards showOnly="all" />
+                
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  <div className="lg:col-span-2">
+                    <PropertiesSection />
+                  </div>
+                  
+                  <div>
+                    <ActivitySection />
+                  </div>
+                </div>
+              </>
+            )}
           </main>
         </div>
       </div>
