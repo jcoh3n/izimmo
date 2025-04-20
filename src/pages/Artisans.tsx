@@ -189,7 +189,7 @@ const Artisans = () => {
             <div className="md:hidden">
               <Sheet open={filterOpen} onOpenChange={setFilterOpen}>
                 <SheetTrigger asChild>
-                  <Button variant="outline" className="w-full flex items-center justify-center gap-2">
+                  <Button className="w-full flex items-center justify-center gap-2 bg-izimmo-blue-500 hover:bg-izimmo-blue-600 text-white">
                     <SlidersHorizontal size={16} />
                     Filtres et tri
                   </Button>

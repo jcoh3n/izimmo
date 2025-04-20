@@ -114,7 +114,7 @@ const Index = () => {
                   </Button>
                 </Link>
                 <Link to="/fonctionnement" className="w-full sm:w-auto">
-                  <Button variant="outline" size="lg" className="w-full sm:w-auto border-white text-white hover:bg-white/10">
+                  <Button size="lg" className="w-full sm:w-auto bg-izimmo-blue-500 text-white hover:bg-izimmo-blue-600">
                     Découvrir
                     <ChevronRight size={16} className="ml-2" />
                   </Button>
