@@ -19,9 +19,11 @@ import { Separator } from '@/components/ui/separator';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import PropertyCard from '@/components/dashboard/PropertyCard';
 import { cn } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('properties');
+  const isMobile = useIsMobile();
   
   const propertyData = [
     {
@@ -120,7 +122,7 @@ const Dashboard = () => {
   
   const SidebarNavItem = ({ icon: Icon, label, active, badge }: { icon: any, label: string, active?: boolean, badge?: number }) => (
     <div className={cn(
-      "flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer transition-colors",
+      "flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer transition-colors touch-target",
       active 
         ? "bg-sidebar-accent text-sidebar-accent-foreground" 
         : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
@@ -133,6 +135,17 @@ const Dashboard = () => {
         </Badge>
       )}
     </div>
+  );
+
+  // Composant d'onglets mobiles pour basculer entre les sections
+  const MobileTabs = () => (
+    <Tabs defaultValue="properties" className="w-full mb-6 md:hidden">
+      <TabsList className="w-full grid grid-cols-3">
+        <TabsTrigger value="properties">Biens</TabsTrigger>
+        <TabsTrigger value="activity">Activité</TabsTrigger>
+        <TabsTrigger value="stats">Stats</TabsTrigger>
+      </TabsList>
+    </Tabs>
   );
 
   return (
@@ -190,29 +203,29 @@ const Dashboard = () => {
         
         <div className="flex-1">
           <header className="bg-white border-b border-izimmo-gray-200 sticky top-0 z-10">
-            <div className="flex justify-between items-center px-6 py-3">
-              <div className="flex items-center">
+            <div className="flex justify-between items-center px-4 md:px-6 py-3">
+              <div className="flex items-center gap-2">
                 <SidebarTrigger>
-                  <Button variant="ghost" size="icon" className="mr-2">
+                  <Button variant="ghost" size="icon" className="mr-0 md:mr-2">
                     <Menu size={20} />
                   </Button>
                 </SidebarTrigger>
-                <div className="relative w-64 mr-4">
+                <div className="relative w-40 md:w-64 mr-2 md:mr-4 hidden sm:block">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-izimmo-gray-400" size={16} />
                   <Input
                     placeholder="Rechercher..."
                     className="pl-9 bg-izimmo-gray-50 border-izimmo-gray-200"
                   />
                 </div>
-                <Link to="/">
+                <Link to="/" className="hidden sm:block">
                   <Button variant="outline" className="flex items-center gap-2">
                     <ArrowLeft size={16} />
-                    Retour au site
+                    <span className="hidden md:inline">Retour au site</span>
                   </Button>
                 </Link>
               </div>
               
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 md:gap-4">
                 <Button variant="ghost" size="icon" className="relative">
                   <Bell size={20} />
                   <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500" />
@@ -225,7 +238,7 @@ const Dashboard = () => {
                         <AvatarImage src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80" />
                         <AvatarFallback>JD</AvatarFallback>
                       </Avatar>
-                      <span>Jean Dupont</span>
+                      <span className="hidden md:inline">Jean Dupont</span>
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
@@ -236,25 +249,48 @@ const Dashboard = () => {
                 </DropdownMenu>
               </div>
             </div>
+            
+            {/* Barre de recherche mobile */}
+            <div className="px-4 pb-3 sm:hidden">
+              <div className="relative w-full">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-izimmo-gray-400" size={16} />
+                <Input
+                  placeholder="Rechercher..."
+                  className="pl-9 bg-izimmo-gray-50 border-izimmo-gray-200 w-full"
+                />
+              </div>
+            </div>
           </header>
           
-          <main className="p-6 bg-izimmo-gray-50 min-h-[calc(100vh-64px)]">
-            <h1 className="text-2xl font-bold text-izimmo-gray-800 mb-6">
-              Tableau de bord
-            </h1>
+          <main className="p-4 md:p-6 bg-izimmo-gray-50 min-h-[calc(100vh-64px)]">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+              <h1 className="text-xl md:text-2xl font-bold text-izimmo-gray-800 mb-2 sm:mb-0">
+                Tableau de bord
+              </h1>
+              
+              <Link to="/" className="sm:hidden">
+                <Button variant="outline" size="sm" className="flex items-center gap-1">
+                  <ArrowLeft size={16} />
+                  Retour au site
+                </Button>
+              </Link>
+            </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            {/* Navigation mobile par onglets */}
+            <MobileTabs />
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
               {stats.map((stat, index) => {
                 const Icon = stat.icon;
                 return (
                   <Card key={index}>
-                    <CardContent className="p-6 flex items-center gap-4">
-                      <div className={`h-12 w-12 rounded-full flex items-center justify-center ${stat.color}`}>
-                        <Icon size={24} />
+                    <CardContent className="p-4 md:p-6 flex items-center gap-3 md:gap-4">
+                      <div className={`h-10 w-10 md:h-12 md:w-12 rounded-full flex items-center justify-center ${stat.color}`}>
+                        <Icon size={20} className="md:size-5" />
                       </div>
                       <div>
                         <p className="text-izimmo-gray-600 text-sm">{stat.title}</p>
-                        <p className="text-3xl font-bold text-izimmo-gray-800">{stat.value}</p>
+                        <p className="text-2xl md:text-3xl font-bold text-izimmo-gray-800">{stat.value}</p>
                       </div>
                     </CardContent>
                   </Card>
@@ -262,8 +298,8 @@ const Dashboard = () => {
               })}
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="md:col-span-2">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
                 <Card className="h-full">
                   <CardHeader className="pb-2">
                     <CardTitle>Mes biens</CardTitle>
@@ -273,10 +309,10 @@ const Dashboard = () => {
                   </CardHeader>
                   <CardContent>
                     <Tabs defaultValue="all" className="mt-2">
-                      <TabsList className="mb-4">
-                        <TabsTrigger value="all">Tous</TabsTrigger>
-                        <TabsTrigger value="apartments">Appartements</TabsTrigger>
-                        <TabsTrigger value="houses">Maisons</TabsTrigger>
+                      <TabsList className="mb-4 flex overflow-x-auto">
+                        <TabsTrigger value="all" className="flex-1">Tous</TabsTrigger>
+                        <TabsTrigger value="apartments" className="flex-1">Appartements</TabsTrigger>
+                        <TabsTrigger value="houses" className="flex-1">Maisons</TabsTrigger>
                       </TabsList>
                       
                       <TabsContent value="all" className="space-y-4">
@@ -324,30 +360,30 @@ const Dashboard = () => {
                       {recentActivity.map((activity) => (
                         <div key={activity.id} className="flex gap-3 pb-3 border-b border-izimmo-gray-200 last:border-0">
                           {activity.type === 'intervention' && (
-                            <Avatar className="h-10 w-10">
+                            <Avatar className="h-10 w-10 shrink-0">
                               <AvatarImage src={activity.artisanAvatar} />
                               <AvatarFallback>{activity.artisan?.substring(0, 2)}</AvatarFallback>
                             </Avatar>
                           )}
                           
                           {activity.type === 'share' && (
-                            <Avatar className="h-10 w-10">
+                            <Avatar className="h-10 w-10 shrink-0">
                               <AvatarImage src={activity.userAvatar} />
                               <AvatarFallback>{activity.user?.substring(0, 2)}</AvatarFallback>
                             </Avatar>
                           )}
                           
                           {activity.type === 'update' && (
-                            <div className="h-10 w-10 bg-izimmo-blue-100 rounded-full flex items-center justify-center text-izimmo-blue-600">
+                            <div className="h-10 w-10 shrink-0 bg-izimmo-blue-100 rounded-full flex items-center justify-center text-izimmo-blue-600">
                               <FilePlus size={20} />
                             </div>
                           )}
                           
-                          <div className="flex-1">
-                            <p className="text-sm font-medium text-izimmo-gray-800">{activity.description}</p>
-                            <div className="flex items-center gap-2 mt-1">
-                              <p className="text-xs text-izimmo-gray-600">{activity.property}</p>
-                              <span className="text-izimmo-gray-400">•</span>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-izimmo-gray-800 break-words">{activity.description}</p>
+                            <div className="flex items-center gap-2 mt-1 flex-wrap">
+                              <p className="text-xs text-izimmo-gray-600 truncate max-w-full">{activity.property}</p>
+                              <span className="text-izimmo-gray-400 hidden xs:inline">•</span>
                               <p className="text-xs text-izimmo-gray-600">{activity.date}</p>
                             </div>
                           </div>
@@ -356,7 +392,7 @@ const Dashboard = () => {
                     </div>
                   </CardContent>
                   <CardFooter className="flex justify-center border-t pt-4">
-                    <Button variant="link" className="text-izimmo-blue-600">
+                    <Button variant="link" className="text-izimmo-blue-600 w-full">
                       Voir tout l'historique
                     </Button>
                   </CardFooter>

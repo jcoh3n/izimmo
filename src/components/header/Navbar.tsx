@@ -1,8 +1,8 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Logo from './Logo';
+import MobileNav from './MobileNav';
 
 const Navbar = () => {
   return (
@@ -31,11 +31,16 @@ const Navbar = () => {
         </div>
         
         <div className="flex items-center gap-4">
-          <Link to="/dashboard">
-            <Button className="bg-izimmo-blue-500 hover:bg-izimmo-blue-600">
-              Accéder au dashboard
-            </Button>
-          </Link>
+          <div className="hidden md:block">
+            <Link to="/dashboard">
+              <Button className="bg-izimmo-blue-500 hover:bg-izimmo-blue-600">
+                Accéder au dashboard
+              </Button>
+            </Link>
+          </div>
+          
+          {/* Mobile Navigation */}
+          <MobileNav />
         </div>
       </div>
     </header>

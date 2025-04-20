@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Clock, Users, MapPin, ChevronRight } from 'lucide-react';
@@ -23,11 +22,11 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
   return (
     <div className="bg-white border border-izimmo-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
       <div className="flex flex-col md:flex-row">
-        <div className="md:w-1/4 h-full">
+        <div className="w-full md:w-1/4">
           <img 
             src={property.image} 
             alt={property.title} 
-            className="w-full h-40 md:h-full object-cover"
+            className="w-full h-48 md:h-full object-cover"
           />
         </div>
         
@@ -47,7 +46,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
               
               <div className="flex items-center gap-1 text-izimmo-gray-600 text-sm mt-1">
                 <MapPin size={14} />
-                <span>{property.address}</span>
+                <span className="truncate">{property.address}</span>
               </div>
             </div>
             
@@ -68,21 +67,21 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
             </div>
           </div>
           
-          <div className="flex justify-between items-center mt-4 pt-4 border-t border-izimmo-gray-200">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mt-4 pt-4 border-t border-izimmo-gray-200">
             <div className="text-izimmo-gray-600 flex items-center gap-1">
               <span className="text-2xl font-semibold text-izimmo-blue-600">{property.interventions}</span>
               <span>interventions</span>
             </div>
             
-            <div className="flex gap-3">
-              <Link to={`/property/${property.id}`}>
-                <Button variant="outline" size="sm" className="flex items-center gap-1">
+            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+              <Link to={`/property/${property.id}`} className="w-full sm:w-auto">
+                <Button variant="outline" size="sm" className="w-full touch-target h-10 flex items-center justify-center gap-1">
                   <span>Voir la fiche</span>
                   <ChevronRight size={16} />
                 </Button>
               </Link>
-              <Link to={`/property/${property.id}/add-intervention`}>
-                <Button size="sm" className="bg-izimmo-blue-500 hover:bg-izimmo-blue-600">
+              <Link to={`/property/${property.id}/add-intervention`} className="w-full sm:w-auto">
+                <Button size="sm" className="w-full touch-target h-10 bg-izimmo-blue-500 hover:bg-izimmo-blue-600">
                   Ajouter une intervention
                 </Button>
               </Link>

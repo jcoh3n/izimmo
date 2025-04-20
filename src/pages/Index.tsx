@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Navbar from '@/components/header/Navbar';
 import { Button } from '@/components/ui/button';
@@ -97,26 +96,26 @@ const Index = () => {
       <Navbar />
       
       {/* Hero Section */}
-      <section className="hero-gradient text-white py-20 md:py-28">
+      <section className="hero-gradient text-white py-12 md:py-20 lg:py-28">
         <div className="container">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="flex flex-col gap-6 animate-fade-in">
-              <h1 className="text-4xl md:text-5xl font-bold leading-tight">
+          <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+            <div className="flex flex-col gap-4 md:gap-6 animate-fade-in">
+              <h1 className="font-bold leading-tight">
                 L'historique transparent de votre bien immobilier
               </h1>
-              <p className="text-lg md:text-xl text-izimmo-gray-100 leading-relaxed">
+              <p className="text-base md:text-lg lg:text-xl text-izimmo-gray-100 leading-relaxed">
                 Iz'Immo centralise l'historique des interventions sur vos biens immobiliers. 
                 Suivez, partagez et valorisez votre patrimoine en toute transparence.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 mt-4">
-                <Link to="/signup">
-                  <Button size="lg" className="bg-white text-izimmo-blue-700 hover:bg-izimmo-gray-100">
+              <div className="flex flex-col sm:flex-row gap-4 mt-2 md:mt-4">
+                <Link to="/signup" className="w-full sm:w-auto">
+                  <Button size="lg" className="w-full sm:w-auto bg-white text-izimmo-blue-700 hover:bg-izimmo-gray-100">
                     Créer un compte
                   </Button>
                 </Link>
-                <Link to="/fonctionnement">
-                  <Button variant="outline" size="lg" className="border-white text-white hover:bg-white/10">
-                    Découvrir la plateforme
+                <Link to="/fonctionnement" className="w-full sm:w-auto">
+                  <Button variant="outline" size="lg" className="w-full sm:w-auto border-white text-white hover:bg-white/10">
+                    Découvrir
                     <ChevronRight size={16} className="ml-2" />
                   </Button>
                 </Link>
@@ -136,18 +135,18 @@ const Index = () => {
       </section>
 
       {/* How it Works Section */}
-      <section className="py-20 bg-white">
+      <section className="section bg-white">
         <div className="container">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-izimmo-gray-800 mb-4">
+          <div className="text-center max-w-3xl mx-auto mb-8 md:mb-16">
+            <h2 className="font-bold text-izimmo-gray-800 mb-3 md:mb-4">
               Comment ça fonctionne
             </h2>
-            <p className="text-izimmo-gray-600 text-lg">
+            <p className="text-izimmo-gray-600 text-base md:text-lg">
               Iz'Immo simplifie le suivi de vos biens immobiliers en trois étapes simples
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
             {stepCards.map((step) => (
               <StepCard key={step.id} {...step} />
             ))}
@@ -156,18 +155,18 @@ const Index = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-izimmo-gray-50">
+      <section className="section bg-izimmo-gray-50">
         <div className="container">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-izimmo-gray-800 mb-4">
+          <div className="text-center max-w-3xl mx-auto mb-8 md:mb-16">
+            <h2 className="font-bold text-izimmo-gray-800 mb-3 md:mb-4">
               Pourquoi choisir Iz'Immo
             </h2>
-            <p className="text-izimmo-gray-600 text-lg">
+            <p className="text-izimmo-gray-600 text-base md:text-lg">
               Découvrez les avantages qui font d'Iz'Immo la référence pour la transparence immobilière
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
             {features.map((feature, index) => (
               <FeatureCard key={index} {...feature} />
             ))}
@@ -176,26 +175,26 @@ const Index = () => {
       </section>
 
       {/* Featured Artisans Section */}
-      <section className="py-20 bg-white">
+      <section className="section bg-white">
         <div className="container">
-          <div className="flex flex-col md:flex-row justify-between items-center mb-12">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-bold text-izimmo-gray-800 mb-2">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 md:mb-12">
+            <div className="mb-4 md:mb-0">
+              <h2 className="font-bold text-izimmo-gray-800 mb-2">
                 Artisans certifiés
               </h2>
-              <p className="text-izimmo-gray-600 text-lg">
+              <p className="text-izimmo-gray-600 text-base md:text-lg">
                 Collaborez avec des professionnels qualifiés et reconnus
               </p>
             </div>
             <Link to="/artisans">
-              <Button variant="outline" className="mt-4 md:mt-0">
+              <Button variant="outline" className="w-full sm:w-auto">
                 Voir tous les artisans
                 <ChevronRight size={16} className="ml-2" />
               </Button>
             </Link>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {featuredArtisans.map((artisan) => (
               <ArtisanCard key={artisan.id} {...artisan} />
             ))}
@@ -204,23 +203,23 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-izimmo-blue-600 text-white">
+      <section className="section bg-izimmo-blue-50">
         <div className="container">
           <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Prêt à valoriser votre patrimoine immobilier ?
+            <h2 className="font-bold text-izimmo-gray-800 mb-4">
+              Prêt à commencer avec Iz'Immo ?
             </h2>
-            <p className="text-xl mb-8 text-izimmo-gray-100">
-              Rejoignez Iz'Immo dès aujourd'hui et accédez à un historique complet et transparent de vos biens.
+            <p className="text-izimmo-gray-600 mb-6 text-base md:text-lg">
+              Rejoignez notre plateforme et commencez à gérer vos biens immobiliers en toute transparence.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/signup">
-                <Button size="lg" className="bg-white text-izimmo-blue-700 hover:bg-izimmo-gray-100">
-                  Créer un compte gratuit
+              <Link to="/signup" className="w-full sm:w-auto">
+                <Button size="lg" className="w-full bg-izimmo-blue-500 hover:bg-izimmo-blue-600">
+                  Créer un compte
                 </Button>
               </Link>
-              <Link to="/contact">
-                <Button variant="outline" size="lg" className="border-white text-white hover:bg-white/10">
+              <Link to="/contact" className="w-full sm:w-auto">
+                <Button variant="outline" size="lg" className="w-full">
                   Nous contacter
                 </Button>
               </Link>

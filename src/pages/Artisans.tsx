@@ -1,12 +1,12 @@
-
 import React, { useState } from 'react';
 import Navbar from '@/components/header/Navbar';
 import Footer from '@/components/footer/Footer';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Filter, MapPin, ArrowUpDown, Star } from 'lucide-react';
+import { Search, Filter, MapPin, ArrowUpDown, Star, SlidersHorizontal } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter } from '@/components/ui/sheet';
 import ArtisanDetailCard from '@/components/artisans/ArtisanDetailCard';
 
 const Artisans = () => {
@@ -14,6 +14,7 @@ const Artisans = () => {
   const [specialty, setSpecialty] = useState('all');
   const [location, setLocation] = useState('all');
   const [sortBy, setSortBy] = useState('rating');
+  const [filterOpen, setFilterOpen] = useState(false);
   
   const artisans = [
     {
@@ -111,31 +112,40 @@ const Artisans = () => {
     }
   });
 
+  // Réinitialiser les filtres
+  const resetFilters = () => {
+    setSearchTerm('');
+    setSpecialty('all');
+    setLocation('all');
+    setFilterOpen(false);
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
       
-      <div className="bg-izimmo-blue-700 text-white py-16">
+      <div className="bg-izimmo-blue-700 text-white py-10 md:py-16">
         <div className="container">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">
+          <h1 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4">
             Artisans certifiés
           </h1>
-          <p className="text-xl text-izimmo-gray-100 mb-8 max-w-2xl">
+          <p className="text-base md:text-xl text-izimmo-gray-100 mb-6 md:mb-8 max-w-2xl">
             Trouvez des professionnels qualifiés pour l'entretien et la rénovation de votre bien immobilier.
           </p>
           
-          <div className="bg-white rounded-lg shadow-lg p-4 flex flex-col md:flex-row gap-4">
+          <div className="bg-white rounded-lg shadow-lg p-4 flex flex-col gap-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-izimmo-gray-400" size={18} />
               <Input
-                placeholder="Rechercher un artisan par nom ou compétence..."
+                placeholder="Rechercher un artisan..."
                 className="pl-10"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Filtres sur écran large */}
+            <div className="hidden md:grid md:grid-cols-3 gap-4">
               <Select value={specialty} onValueChange={setSpecialty}>
                 <SelectTrigger className="flex items-center gap-2">
                   <Filter size={16} className="text-izimmo-gray-500" />
@@ -174,21 +184,91 @@ const Artisans = () => {
                 </SelectContent>
               </Select>
             </div>
+            
+            {/* Bouton de filtre sur mobile */}
+            <div className="md:hidden">
+              <Sheet open={filterOpen} onOpenChange={setFilterOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="outline" className="w-full flex items-center justify-center gap-2">
+                    <SlidersHorizontal size={16} />
+                    Filtres et tri
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="bottom" className="h-[70vh] p-0">
+                  <SheetHeader className="p-4 border-b">
+                    <SheetTitle>Filtrer et trier</SheetTitle>
+                  </SheetHeader>
+                  <div className="p-4 space-y-4 overflow-y-auto">
+                    <div>
+                      <p className="text-sm font-medium mb-2">Spécialité</p>
+                      <Select value={specialty} onValueChange={setSpecialty}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Toutes les spécialités" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Toutes les spécialités</SelectItem>
+                          {specialties.map((s, index) => (
+                            <SelectItem key={index} value={s}>{s}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div>
+                      <p className="text-sm font-medium mb-2">Localisation</p>
+                      <Select value={location} onValueChange={setLocation}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Toutes les villes" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Toutes les villes</SelectItem>
+                          {locations.map((l, index) => (
+                            <SelectItem key={index} value={l}>{l}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div>
+                      <p className="text-sm font-medium mb-2">Trier par</p>
+                      <Select value={sortBy} onValueChange={setSortBy}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Avis clients" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="rating">Avis clients</SelectItem>
+                          <SelectItem value="experience">Expérience</SelectItem>
+                          <SelectItem value="name">Ordre alphabétique</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <SheetFooter className="flex flex-row justify-between p-4 border-t">
+                    <Button variant="outline" className="w-1/2" onClick={resetFilters}>
+                      Réinitialiser
+                    </Button>
+                    <Button className="w-1/2 bg-izimmo-blue-500" onClick={() => setFilterOpen(false)}>
+                      Appliquer
+                    </Button>
+                  </SheetFooter>
+                </SheetContent>
+              </Sheet>
+            </div>
           </div>
         </div>
       </div>
       
-      <main className="flex-1 bg-izimmo-gray-50 py-12">
+      <main className="flex-1 bg-izimmo-gray-50 py-8 md:py-12">
         <div className="container">
           {filteredArtisans.length > 0 ? (
             <>
-              <div className="flex justify-between items-center mb-8">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 md:mb-8">
                 <div>
-                  <p className="text-izimmo-gray-600">
+                  <p className="text-izimmo-gray-600 mb-2 sm:mb-0">
                     {filteredArtisans.length} artisans trouvés
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <span className="text-izimmo-gray-600 text-sm">Filtres actifs :</span>
                   {specialty !== 'all' && (
                     <Badge className="bg-izimmo-blue-100 text-izimmo-blue-800 hover:bg-izimmo-blue-200">
@@ -200,27 +280,35 @@ const Artisans = () => {
                       {location}
                     </Badge>
                   )}
+                  
+                  {(specialty !== 'all' || location !== 'all') && (
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="text-izimmo-gray-500 h-8 px-2"
+                      onClick={resetFilters}
+                    >
+                      Réinitialiser
+                    </Button>
+                  )}
                 </div>
               </div>
               
-              <div className="grid grid-cols-1 gap-6">
+              <div className="grid grid-cols-1 gap-4 md:gap-6">
                 {sortedArtisans.map((artisan) => (
                   <ArtisanDetailCard key={artisan.id} artisan={artisan} />
                 ))}
               </div>
             </>
           ) : (
-            <div className="text-center py-16">
+            <div className="text-center py-10 md:py-16">
               <p className="text-izimmo-gray-600 text-lg mb-4">
                 Aucun artisan ne correspond à vos critères de recherche.
               </p>
               <Button 
                 variant="outline" 
-                onClick={() => {
-                  setSearchTerm('');
-                  setSpecialty('all');
-                  setLocation('all');
-                }}
+                onClick={resetFilters}
+                className="touch-target h-10"
               >
                 Réinitialiser les filtres
               </Button>
